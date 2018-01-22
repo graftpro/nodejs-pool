@@ -16,7 +16,7 @@ sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again p
 echo -e "[client]\nuser=root\npassword=$ROOT_SQL_PASS" | sudo tee /root/.my.cnf
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y install git python-virtualenv python3-virtualenv curl ntp build-essential screen cmake pkg-config libboost-all-dev libevent-dev libunbound-dev libminiupnpc-dev libunwind8-dev liblzma-dev libldns-dev libexpat1-dev libgtest-dev mysql-server lmdb-utils libzmq3-dev
 cd ~
-git clone https://github.com/Snipa22/nodejs-pool.git  # Change this depending on how the deployment goes.
+git clone https://github.com/mirei83/nodejs-pool.git  # Change this depending on how the deployment goes.
 cd /usr/src/gtest
 sudo cmake .
 sudo make
@@ -24,20 +24,15 @@ sudo mv libg* /usr/lib/
 cd ~
 sudo systemctl enable ntp
 cd /usr/local/src
-sudo git clone https://github.com/monero-project/monero.git
-cd monero
-sudo git checkout v0.11.1.0
-curl https://raw.githubusercontent.com/Snipa22/nodejs-pool/master/deployment/monero_daemon.patch | sudo git apply -v
+sudo git clone https://github.com/graft-project/GraftNetwork.git
+cd GraftNetwork
 sudo make -j$(nproc)
-sudo cp ~/nodejs-pool/deployment/monero.service /lib/systemd/system/
-sudo useradd -m monerodaemon -d /home/monerodaemon
-BLOCKCHAIN_DOWNLOAD_DIR=$(sudo -u monerodaemon mktemp -d)
-sudo -u monerodaemon wget --limit-rate=50m -O $BLOCKCHAIN_DOWNLOAD_DIR/blockchain.raw https://downloads.getmonero.org/blockchain.raw
-sudo -u monerodaemon /usr/local/src/monero/build/release/bin/monero-blockchain-import --input-file $BLOCKCHAIN_DOWNLOAD_DIR/blockchain.raw --batch-size 20000 --database lmdb#fastest --verify off --data-dir /home/monerodaemon/.bitmonero
-sudo -u monerodaemon rm -rf $BLOCKCHAIN_DOWNLOAD_DIR
+sudo cp ~/nodejs-pool/deployment/graft.service /lib/systemd/system/
+sudo useradd -m graftdaemon -d /home/graftdaemon
+BLOCKCHAIN_DOWNLOAD_DIR=$(sudo -u graftdaemon mktemp -d)
 sudo systemctl daemon-reload
-sudo systemctl enable monero
-sudo systemctl start monero
+sudo systemctl enable graft
+sudo systemctl start graft
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.0/install.sh | bash
 source ~/.nvm/nvm.sh
 nvm install v8.9.3
@@ -57,7 +52,7 @@ cd build
 sudo ln -s `pwd` /var/www
 CADDY_DOWNLOAD_DIR=$(mktemp -d)
 cd $CADDY_DOWNLOAD_DIR
-curl -sL "https://snipanet.com/caddy.tar.gz" | tar -xz caddy init/linux-systemd/caddy.service
+curl -sL "https://github.com/mirei83/nodejs-pool/raw/master/deployment/caddy.tar.gz" | tar -xz caddy init/linux-systemd/caddy.service
 sudo mv caddy /usr/local/bin
 sudo chown root:root /usr/local/bin/caddy
 sudo chmod 755 /usr/local/bin/caddy
