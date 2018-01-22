@@ -6,6 +6,12 @@ if [[ `whoami` == "root" ]]; then
     echo "You ran me as root! Do not run me as root!"
     exit 1
 fi
+if [[ -n $(swapon -s) ]]; then
+    :
+else
+sudo dd if=/dev/zero of=/mnt/myswap.swap bs=1M count=2000 &&  mkswap /mnt/myswap.swap &&  swapon /mnt/myswap.swap
+sudo echo "/mnt/swap.img    none    swap    sw    0    0" >> /etc/fstab
+fi
 ROOT_SQL_PASS=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 CURUSER=$(whoami)
 sudo timedatectl set-timezone Etc/UTC

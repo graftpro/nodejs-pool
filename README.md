@@ -70,7 +70,7 @@ pm2 restart api
 
 Install Script:
 ```bash
-curl -L https://raw.githubusercontent.com/mirei83/nodejs-pool/master/deployment/deploy.bash | bash
+curl -L https://github.com/mirei83/nodejs-pool/raw/master/deployment/deploy.bash| bash
 ```
 
 Assumptions for the installer
