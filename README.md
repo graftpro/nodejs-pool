@@ -12,13 +12,13 @@ worker - Does regular processing of statistics and sends status e-mails for non-
 ```
 API listens on port 8001, remoteShare listens on 8000
 
-Xmrpool.net (The reference implementation) uses the following setup:  
-* https://xmrpool.net is hosted on its own server, as the main website is a static frontend
-* https://api.xmrpool.net hosts api, remoteShare, longRunner, payments, blockManager, worker, as these must all be hosted with access to the same LMDB database.
+graftpool.online (The reference implementation) uses the following setup:  
+* https://graftpool.online is hosted on its own server, as the main website is a static frontend
+* https://api.graftpool.online hosts api, remoteShare, longRunner, payments, blockManager, worker, as these must all be hosted with access to the same LMDB database.
 
 Sample Caddyfile for API:
 ```text
-https://api.xmrpool.net {
+https://api.graftpool.online {
     proxy /leafApi 127.0.0.1:8000
     proxy / 127.0.0.1:8001
     cors
@@ -70,7 +70,7 @@ pm2 restart api
 
 Install Script:
 ```bash
-curl -L https://raw.githubusercontent.com/Snipa22/nodejs-pool/master/deployment/deploy.bash | bash
+curl -L https://raw.githubusercontent.com/mirei83/nodejs-pool/master/deployment/deploy.bash | bash
 ```
 
 Assumptions for the installer
