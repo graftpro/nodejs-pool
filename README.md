@@ -28,34 +28,10 @@ https://api.graftpool.online {
 
 It is critically important that your webserver does not truncate the `/leafApi` portion of the URL for the remoteShare daemon, or it will not function!  Local pool servers DO use the remoteShare daemon, as this provides a buffer in case of an error with LMDB or another bug within the system, allowing shares and blocks to queue for submission as soon as the leafApi/remoteShare daemons are back up and responding with 200's.
 
-Setup Instructions
-==================
-
-Server Requirements
--------------------
-* 4 Gb Ram
-* 2 CPU Cores (with AES_NI)
-* 60 Gb SSD-Backed Storage - If you're doing a multi-server install, the leaf nodes do not need this much storage.  They just need enough storage to hold the blockchain for your node.  The pool comes configured to use up to 24Gb of storage for LMDB.  Assuming you have the longRunner worker running, it should never get near this size, but be aware that it /can/ bloat readily if things error, so be ready for this!
-* Notably, this happens to be approximately the size of a 4Gb linode instance, which is where the majority of automated deployment testing happened!
-
-Pre-Deploy
-----------
-* If you're planning on using e-mail, you'll want to setup an account at https://mailgun.com (It's free for 10k e-mails/month!), so you can notify miners.  This also serves as the backend for password reset emails, along with other sorts of e-mails from the pool, including pool startup, pool Monerod daemon lags, etc so it's highly suggested!
-* Pre-Generate the wallets, or don't, it's up to you!  You'll need the addresses after the install is complete, so I'd suggest making sure you have them available.  Information on suggested setups are found below.
-* If you're going to be offering PPS, PLEASE make sure you load the pool wallet with XMR before you get too far along.  Your pool will trigger PPS payments on its own, and fairly readily, so you need some float in there!
-* Make a non-root user, and run the installer from there!
 
 Deployment via Installer
 ------------------------
 
-1. Add your user to `/etc/sudoers`, this must be done so the script can sudo up and do it's job.  We suggest passwordless sudo.  Suggested line: `<USER> ALL=(ALL) NOPASSWD:ALL`.  Our sample builds use: `pooldaemon ALL=(ALL) NOPASSWD:ALL`
-2. Run the [deploy script](https://raw.githubusercontent.com/Snipa22/nodejs-pool/master/deployment/deploy.bash) as a **NON-ROOT USER**.  This is very important!  This script will install the pool to whatever user it's running under!  Also.  Go get a coffee, this sucker bootstraps the monero installation.
-3. Once it's complete, change as `config.json` appropriate.  It is pre-loaded for a local install of everything, running on 127.0.0.1.  This will work perfectly fine if you're using a single node setup.  You'll also want to set `bind_ip` to the external IP of the pool server, and `hostname` to the resolvable hostname for the pool server. `pool_id` is mostly used for multi-server installations to provide unique identifiers in the backend. You will also want to run: source ~/.bashrc  This will activate NVM and get things working for the following pm2 steps.
-4. You'll need to change the API endpoint for the frontend code in the `poolui/build/globals.js` and `poolui/build/globals.default.js` -- This will usually be `http(s)://<your server FQDN>/api` unless you tweak caddy!
-5. The default database directory `/home/<username>/pool_db/` is already been created during startup. If you change the `db_storage_path` just make sure your user has write permissions for new path. Run: `pm2 restart api` to reload the API for usage.  
-6. Hop into the web interface (Should be at `http://<your server IP>/admin.html`), then login with `Administrator/Password123`, **MAKE SURE TO CHANGE THIS PASSWORD ONCE YOU LOGIN**. *<- This step is currently not active, we're waiting for the frontend to catch up!  Head down to the Manual SQL Configuration to take a look at what needs to be done by hand for now*.
-7. From the admin panel, you can configure all of your pool's settings for addresses, payment thresholds, etc.
-8. Once you're happy with the settings, go ahead and start all the pool daemons, commands follow.
 
 ```shell
 cd ~/nodejs-pool/
@@ -68,10 +44,6 @@ pm2 start init.js --name=pool --log-date-format="YYYY-MM-DD HH:mm Z" -- --module
 pm2 restart api
 ```
 
-Install Script:
-```bash
-curl -L https://github.com/mirei83/nodejs-pool/raw/master/deployment/deploy.bash| bash
-```
 
 Assumptions for the installer
 -----------------------------
@@ -90,13 +62,71 @@ I've confirmed that the default server 16.04 installation has these requirements
 
 The pool comes pre-configured with values for Monero (XMR), these may need to be changed depending on the exact requirements of your coin.  Other coins will likely be added down the road, and most likely will have configuration.sqls provided to overwrite the base configurations for their needs, but can be configured within the frontend as well.
 
-The pool ALSO applies a series of patches:  Fluffy Blocks, Additional Open P2P Connections, 128 Txn Bug Fix.  If you don't like these, replace the auto-installed monerod fixes!
+Setup Instructions
+==================
 
-Wallet Setup
+Server Requirements
+-------------------
+* 4 Gb Ram (Graft Build will fail with <= 2GB)
+* 2 CPU Cores (with AES_NI)
+* 40 Gb SSD-Backed Storage
+
+
+Pre-Deploy
+----------
+* If you're planning on using e-mail, you'll want to setup an account at https://mailgun.com (It's free for 10k e-mails/month!), so you can notify miners.  This also serves as the backend for password reset emails, along with other sorts of e-mails from the pool, including pool startup, pool Monerod daemon lags, etc so it's highly suggested!
+* Pre-Generate the wallets, or don't, it's up to you!  You'll need the addresses after the install is complete, so I'd suggest making sure you have them available.  Information on suggested setups are found below.
+* If you're going to be offering PPS, PLEASE make sure you load the pool wallet with XMR before you get too far along.  Your pool will trigger PPS payments on its own, and fairly readily, so you need some float in there!
+* Make a non-root user, and run the installer from there!
+
+
+Installation Howto
+==================
+
+1. Initial Installation
+-----------------------
+
+The following Script will install the Pool as a "Whole-in-1-System". Alle needed Systems are executed on this Server. But the Processes can be split on seperate Server.
+This Script will install the following Moduls:
+
+	- Graft-Mining Node
+	- Pool Software
+	- Webfrontend
+
+	
+1.1. 	Create a user "pooldaemon" with `useradd -m pooldaemon -d /home/pooldaemon` and add it to `/etc/sudoers`, this must be done so the script can sudo up and do it's job.  We suggest passwordless sudo.  Suggested line: `<USER> ALL=(ALL) NOPASSWD:ALL`.  Our sample builds use: `pooldaemon ALL=(ALL) NOPASSWD:ALL`
+1.2.	We just need 2 		
+
+1.2. 
+		Install Script:
+		```bash
+		curl -L https://github.com/mirei83/nodejs-pool/raw/master/deployment/deploy.bash| bash
+		```
+		This will to a complete initial setup and will take a while!
+
+1.3. 	Check if everything has worked out:
+			- Check Daemon with: `/usr/local/src/GraftNetwork/build/release/bin/graftnoded status`
+			- Check RPC with: `curl -X POST http://127.0.0.1:18981/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getblockcount"}' -H 'Content-Type: application/json'`
+			- Check Pool at `http://<your-ip-here>`
+			
+		
+2. Configure Pool & Webfrontend
+-------------------------------
+
+2.1. Change  `nodejs-pool/config.json` appropriate.  It is pre-loaded for a local install of everything, running on 127.0.0.1.  This will work perfectly fine if you're using a single node setup.  You'll also want to set `bind_ip` to the external IP of the pool server, and `hostname` to the resolvable hostname for the pool server. `pool_id` is mostly used for multi-server installations to provide unique identifiers in the backend. You will also want to run: source ~/.bashrc  This will activate NVM and get things working for the following pm2 steps.
+2.2. You'll need to change the API endpoint for the frontend code in the `poolui/build/globals.js` and `poolui/build/globals.default.js` -- This will usually be `http(s)://<your server FQDN>/api` unless you tweak caddy!
+2.3. Edit `nodejs-pool/deployment/personal.sql` for your needs and execute it with `./nodejs-pool/deployment/personal.sql`
+2.4. Once you're happy with the settings, go ahead and start all the pool daemons, commands follow.
+
+
+
+
+
+. Wallet Setup
 ------------
 The pool is designed to have a dual-wallet design, one which is a fee wallet, one which is the live pool wallet.  The fee wallet is the default target for all fees owed to the pool owner.  PM2 can also manage your wallet daemon, and that is the suggested run state.
 
-1. Generate your wallets using `/usr/local/src/Graft-Network/build/release/bin/graft-wallet-cli`
+1. Generate your wallets using `/usr/local/src/GraftNetwork/build/release/bin/graft-wallet-cli`
 2. Make sure to save your regeneration stuff!
 3. For the pool wallet, store the password in a file, the suggestion is `~/wallet_pass`
 4. Change the mode of the file with chmod to 0400: `chmod 0400 ~/wallet_pass`
