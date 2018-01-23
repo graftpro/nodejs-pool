@@ -96,12 +96,14 @@ Wallet Setup
 ------------
 The pool is designed to have a dual-wallet design, one which is a fee wallet, one which is the live pool wallet.  The fee wallet is the default target for all fees owed to the pool owner.  PM2 can also manage your wallet daemon, and that is the suggested run state.
 
-1. Generate your wallets using `/usr/local/src/monero/build/release/bin/monero-wallet-cli`
+1. Generate your wallets using `/usr/local/src/Graft-Network/build/release/bin/graft-wallet-cli`
 2. Make sure to save your regeneration stuff!
 3. For the pool wallet, store the password in a file, the suggestion is `~/wallet_pass`
 4. Change the mode of the file with chmod to 0400: `chmod 0400 ~/wallet_pass`
-5. Start the wallet using PM2: `pm2 start /usr/local/src/monero/build/release/bin/monero-wallet-rpc -- --rpc-bind-port 18082 --password-file ~/wallet_pass --wallet-file <Your wallet name here> --disable-rpc-login --trusted-daemon`
-6. If you don't use PM2, then throw the wallet into a screen and have fun.
+5. Start the wallet using PM2: `pm2 start /usr/local/src/GraftNetwork/build/release/bin/graft-wallet-rpc -- --rpc-bind-port 18982 --password-file ~/wallet_pass --wallet-file <Your wallet name here> --disable-rpc-login --trusted-daemon`
+6. If: you don't use PM2, then throw the wallet into a screen and have fun.
+7. To test if the wallet-rpc is running try: 'curl -X POST http://127.0.0.1:18982/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getaddress"}' -H 'Content-Type: application/json''
+
 
 Manual Setup
 ------------
