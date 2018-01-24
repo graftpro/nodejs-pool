@@ -7,3 +7,4 @@ UPDATE pool.config SET item_value = 'https://api.mailgun.net/v3/xxxxxxx' WHERE m
 UPDATE pool.config SET item_value = 'BlockMaster@graftpool.online' WHERE module = 'general' and item = 'emailFrom';
 UPDATE pool.config SET item_value = 'https://api.graftpool.online/leafApi' WHERE module = 'general' and item = 'shareHost';
 UPDATE pool.config SET item_value = 'Cheers, the allmighty BlockMaster' WHERE module = 'general' and item = 'emailSig';
+UPDATE pool.users SET email = 'YOUR-LOGIN-PASSWORD' WHERE id = '1';

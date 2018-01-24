@@ -58,8 +58,6 @@ The installer assumes that you will be running a single-node instance and using 
 The following raw binaries **MUST BE AVAILABLE FOR IT TO BOOTSTRAP**:
 * sudo
 
-I've confirmed that the default server 16.04 installation has these requirements.
-
 The pool comes pre-configured with values for Monero (XMR), these may need to be changed depending on the exact requirements of your coin.  Other coins will likely be added down the road, and most likely will have configuration.sqls provided to overwrite the base configurations for their needs, but can be configured within the frontend as well.
 
 Setup Instructions
@@ -70,6 +68,7 @@ Server Requirements
 * 4 Gb Ram (Graft Build will fail with <= 2GB)
 * 2 CPU Cores (with AES_NI)
 * 40 Gb SSD-Backed Storage
+* Clean and fresh Installation of Ubuntu 16.04
 
 
 Pre-Deploy
@@ -95,7 +94,8 @@ This Script will install the following Moduls:
 
 	
 1.1. 	Create a user "pooldaemon" with `useradd -m pooldaemon -d /home/pooldaemon` and add it to `/etc/sudoers`, this must be done so the script can sudo up and do it's job.  We suggest passwordless sudo.  Suggested line: `<USER> ALL=(ALL) NOPASSWD:ALL`.  Our sample builds use: `pooldaemon ALL=(ALL) NOPASSWD:ALL`
-1.2.	We just need 2 		
+1.2.	We just need 2 packages preinstalled: `apt-get install -y curl sudo`
+1.3.	Su into our user `su pooldaemon`
 
 1.2. 
 		Install Script:
@@ -107,7 +107,7 @@ This Script will install the following Moduls:
 1.3. 	Check if everything has worked out:
 			- Check Daemon with: `/usr/local/src/GraftNetwork/build/release/bin/graftnoded status`
 			- Check RPC with: `curl -X POST http://127.0.0.1:18981/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getblockcount"}' -H 'Content-Type: application/json'`
-			- Check Pool at `http://<your-ip-here>`
+			- Check Pool at `http://<your-ip-here>` (just if check if Networkhashrate is shown. Then its fine.)
 			
 		
 2. Configure Pool & Webfrontend
@@ -115,46 +115,44 @@ This Script will install the following Moduls:
 
 2.1. Change  `nodejs-pool/config.json` appropriate.  It is pre-loaded for a local install of everything, running on 127.0.0.1.  This will work perfectly fine if you're using a single node setup.  You'll also want to set `bind_ip` to the external IP of the pool server, and `hostname` to the resolvable hostname for the pool server. `pool_id` is mostly used for multi-server installations to provide unique identifiers in the backend. You will also want to run: source ~/.bashrc  This will activate NVM and get things working for the following pm2 steps.
 2.2. You'll need to change the API endpoint for the frontend code in the `poolui/build/globals.js` and `poolui/build/globals.default.js` -- This will usually be `http(s)://<your server FQDN>/api` unless you tweak caddy!
-2.3. Edit `nodejs-pool/deployment/personal.sql` for your needs and execute it with `./nodejs-pool/deployment/personal.sql`
-2.4. Once you're happy with the settings, go ahead and start all the pool daemons, commands follow.
 
 
+3. Wallet Setup
+---------------
 
-
-
-. Wallet Setup
-------------
 The pool is designed to have a dual-wallet design, one which is a fee wallet, one which is the live pool wallet.  The fee wallet is the default target for all fees owed to the pool owner.  PM2 can also manage your wallet daemon, and that is the suggested run state.
 
-1. Generate your wallets using `/usr/local/src/GraftNetwork/build/release/bin/graft-wallet-cli`
-2. Make sure to save your regeneration stuff!
-3. For the pool wallet, store the password in a file, the suggestion is `~/wallet_pass`
-4. Change the mode of the file with chmod to 0400: `chmod 0400 ~/wallet_pass`
-5. Start the wallet using PM2: `pm2 start /usr/local/src/GraftNetwork/build/release/bin/graft-wallet-rpc -- --rpc-bind-port 18982 --password-file ~/wallet_pass --wallet-file <Your wallet name here> --disable-rpc-login --trusted-daemon`
-6. If: you don't use PM2, then throw the wallet into a screen and have fun.
-7. To test if the wallet-rpc is running try: 'curl -X POST http://127.0.0.1:18982/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getaddress"}' -H 'Content-Type: application/json''
+3.1. Generate your wallets using `/usr/local/src/GraftNetwork/build/release/bin/graft-wallet-cli`
+3.2. Make sure to save your regeneration stuff!
+3.3. For the pool wallet, store the password in a file, the suggestion is `~/wallet_pass`
+3.4. Change the mode of the file with chmod to 0400: `chmod 0400 ~/wallet_pass`
+
+3.5. Start the rpc-wallet using PM2: `pm2 start /usr/local/src/GraftNetwork/build/release/bin/graft-wallet-rpc -- --rpc-bind-port 18982 --password-file ~/wallet_pass --wallet-file <Your wallet name here> --disable-rpc-login --trusted-daemon`
+3.6. If you don't use PM2, then throw the wallet into a screen and have fun.
+3.7. To test if the wallet-rpc is running try: 'curl -X POST http://127.0.0.1:18982/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getaddress"}' -H 'Content-Type: application/json''
+
+4. Modify SQL Settings
+----------------------
+4.1. Edit `nodejs-pool/deployment/personal.sql` for your needs and execute it with `mysql -u root --password=$ROOT_SQL_PASS < ./deployment/personal.sql` (ROOT_SQL_PASS is in /root/.my.cnf)
 
 
-Manual Setup
-------------
-Pretty similar to the above, you may wish to dig through a few other things for sanity sake, but the installer scripts should give you a good idea of what to expect from the ground up.
 
-Manual SQL Configuration
-------------------------
-Until the full frontend is released, the following SQL information needs to be updated by hand in order to bring your pool online, in module/item format.  You can also edit the values in sample_config.sql, then import them into SQL directly via an update.
+
+5. Start Pool
+--------------
+
+```shell
+cd ~/nodejs-pool/
+pm2 start init.js --name=blockManager --log-date-format="YYYY-MM-DD HH:mm Z"  -- --module=blockManager
+pm2 start init.js --name=worker --log-date-format="YYYY-MM-DD HH:mm Z" -- --module=worker
+pm2 start init.js --name=payments --log-date-format="YYYY-MM-DD HH:mm Z" -- --module=payments
+pm2 start init.js --name=remoteShare --log-date-format="YYYY-MM-DD HH:mm Z" -- --module=remoteShare
+pm2 start init.js --name=longRunner --log-date-format="YYYY-MM-DD HH:mm Z" -- --module=longRunner
+pm2 start init.js --name=pool --log-date-format="YYYY-MM-DD HH:mm Z" -- --module=pool
+pm2 restart api
 ```
-Critical/Must be done:
-pool/address
-pool/feeAddress
-general/shareHost
 
-Nice to have:
-general/mailgunKey
-general/mailgunURL
-general/emailFrom
 
-SQL import command: sudo mysql pool < ~/nodejs-pool/sample_config.sql (Adjust name/path as needed!)
-```
 
 The shareHost configuration is designed to be pointed at wherever the leafApi endpoint exists.  For xmrpool.net, we use https://api.xmrpool.net/leafApi.  If you're using the automated setup script, you can use: `http://<your IP>/leafApi`, as Caddy will proxy it.  If you're just using localhost and a local pool serv, http://127.0.0.1:8000/leafApi will do you quite nicely
 
