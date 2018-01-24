@@ -82,6 +82,9 @@ Pre-Deploy
 Installation Howto
 ==================
 
+
+
+
 1. Initial Installation
 -----------------------
 
@@ -93,21 +96,23 @@ This Script will install the following Moduls:
 	- Webfrontend
 
 	
-1.1. 	Create a user "pooldaemon" with `useradd -m pooldaemon -d /home/pooldaemon` and add it to `/etc/sudoers`, this must be done so the script can sudo up and do it's job.  We suggest passwordless sudo.  Suggested line: `<USER> ALL=(ALL) NOPASSWD:ALL`.  Our sample builds use: `pooldaemon ALL=(ALL) NOPASSWD:ALL`
-1.2.	We just need 2 packages preinstalled: `apt-get install -y curl sudo`
-1.3.	Su into our user `su pooldaemon`
+*  	Create a user "pooldaemon" with `useradd -m pooldaemon -d /home/pooldaemon` and add it to `/etc/sudoers`, this must be done so the script can sudo up and do it's job.  We suggest passwordless sudo.  
+	Suggested line: `<USER> ALL=(ALL) NOPASSWD:ALL`.  Our sample builds use: `pooldaemon ALL=(ALL) NOPASSWD:ALL`
+* 	We just need 2 packages preinstalled: `apt-get install -y curl sudo`
+* 	Su into our user `su pooldaemon`
 
-1.2. 
-		Install Script:
-		```bash
+* 		Install Script:
+		`
 		curl -L https://github.com/mirei83/nodejs-pool/raw/master/deployment/deploy.bash| bash
-		```
+		`
+		
 		This will to a complete initial setup and will take a while!
 
-1.3. 	Check if everything has worked out:
-			- Check Daemon with: `/usr/local/src/GraftNetwork/build/release/bin/graftnoded status`
-			- Check RPC with: `curl -X POST http://127.0.0.1:18981/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getblockcount"}' -H 'Content-Type: application/json'`
-			- Check Pool at `http://<your-ip-here>` (just if check if Networkhashrate is shown. Then its fine.)
+* 	Check if everything has worked out:
+
+	- Check Daemon with: `/usr/local/src/GraftNetwork/build/release/bin/graftnoded status`
+	- Check RPC with: `curl -X POST http://127.0.0.1:18981/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getblockcount"}' -H 'Content-Type: application/json'`
+	- Check Pool at `http://<your-ip-here>` (just if check if Networkhashrate is shown. Then its fine.)
 			
 		
 2. Configure Pool & Webfrontend
