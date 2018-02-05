@@ -247,35 +247,30 @@ This will restart all of your related daemons, and will clear any open reader co
 If on the other hand, you have no "Free pages" and your Pages used is equal to the Max Pages, then you've run out of disk space for LMDB.  You need to verify the cleaner is working.  For reference, 4.3 million shares are stored within approximately 2-3 Gb of space, so if you're vastly exceeding this, then your cleaner (longRunner) is likely broken.
 
 
-PPS Fee Thoughts
-================
-If you're considering PPS, I've spoken with [Fireice_UK](https://github.com/fireice-uk/) whom kindly did some math about what you're looking at in terms of requirements to run a PPS pool without it self-imploding under particular risk factors, based on the work found [here](https://arxiv.org/pdf/1112.4980.pdf)
-
-```text
-Also I calculated the amount of XMR needed to for a PPS pool to stay afloat. Perhaps you should put them up in the README to stop some spectacular clusterfucks :D:
-For 1 in 1000000 chance that the pool will go bankrupt: 5% fee -> 1200 2% fee -> 3000
-For 1 in 1000000000 chance: 5% fee -> 1800 2% fee -> 4500
-```
-
-The developers of the pool have not verified this, but based on our own usage on https://xmrpool.net/ this seems rather reasonable.  You should be wary if you're considering PPS and take you fees into account appropriately!
 
 Installation/Configuration Assistance
 =====================================
 If you need help installing the pool from scratch, please have your servers ready, which would be Ubuntu 16.04 servers, blank and clean, DNS records pointed.  These need to be x86_64 boxes with AES-NI Available.
 
-Installation assistance is 7 XMR, with a 3 XMR deposit, with remainder to be paid on completion.  
-Configuration assistance is 4 XMR with a 2 XMR deposit, and includes debugging your pool configurations, ensuring that everything is running, and tuning for your uses/needs.  
+
+Installation assistance is 500 GRF, with a 200 GRF deposit, with remainder to be paid on completion.  
+Configuration assistance is 400 GRF with a 200 GRF deposit, and includes debugging your pool configurations, ensuring that everything is running, and tuning for your uses/needs.  
 
 SSH access with a sudo-enabled user will be needed, preferably the user that is slated to run the pool.
 
 If you'd like assistance with setting up node-cryptonote-pool, please provide what branch/repo you'd like to work from, as there's a variety of these.
 
-Assistance is not available for frontend customization at this time.
+Assistance is not available for frontend customization!
 
-For assistance, please contact Snipa at pool_install@snipanet.com or via IRC at irc.freenode.net in the #monero-pools channel.
+You can find us at the Discord Channel https://discord.gg/uTMpZby
+
+
 
 Developer Donations
 ===================
+
+Donate for Snipa22 for the original Code!
+
 If you'd like to make a one time donation, the addresses are as follows:
 * XMR - 44Ldv5GQQhP7K7t3ZBdZjkPA7Kg7dhHwk3ZM3RJqxxrecENSFx27Vq14NAMAd2HBvwEPUVVvydPRLcC69JCZDHLT2X5a4gr
 * BTC - 114DGE2jmPb5CP2RGKZn6u6xtccHhZGFmM
