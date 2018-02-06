@@ -86,14 +86,9 @@ Pre-Deploy
 Installation Howto
 ==================
 
-
 1. Initial Installation
 -----------------------
-
 The following Script will install the Pool as a "Whole-in-1-System". All needed Systems are executed on this Server. But the processes can be split on seperate Server.
-
-
-
 	
 *  	Create a user "pooldaemon" with `useradd -m pooldaemon -d /home/pooldaemon`
 *   Add the following line to /etc/sudoers:  `pooldaemon ALL=(ALL) NOPASSWD:ALL`
@@ -101,33 +96,26 @@ The following Script will install the Pool as a "Whole-in-1-System". All needed 
 * 	Su into our user `su pooldaemon`
 
 * 	Auto-Install Script: `curl -L https://github.com/mirei83/nodejs-pool/raw/master/deployment/deploy.bash| bash`
-	This will to a complete initial setup and will take a while!
+	This will to a complete initial setup including to compile all Graft binaries and will take a while!
 	
-*   Log out and back in from the pool user to activate the npm settings.
+*   Log out and back in from the pool user to activate the npm settings. (As root, you need to be in `/home/pooldaemon` then `su pooldaemon`)
 
 * 	Check if everything has worked out:
 
 	- Check Daemon with: `/usr/local/src/GraftNetwork/build/release/bin/graftnoded status`
 	- Check RPC with: `curl -X POST http://127.0.0.1:18981/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getblockcount"}' -H 'Content-Type: application/json'`
-	- Check Pool at `http://<your-ip-here>` (just if check if Networkhashrate is shown. Then its fine.)
+	- Check Pool at `http://<your-ip-here>` (just check if Networkhashrate is shown. Then its fine.)
 
-
-	
 2. Configure Pool & Webfrontend
 -------------------------------
-
-
 *	Change `nodejs-pool/config.json` appropriate.  It is pre-loaded for a local install of everything, running on 127.0.0.1.  This will work perfectly fine if you're using a single node setup.  You'll also want to set `bind_ip` to the external IP of the pool server, and `hostname` to the resolvable hostname for the pool server. `pool_id` is mostly used for multi-server installations to provide unique identifiers in the backend. You will also want to run: source ~/.bashrc  This will activate NVM and get things working for the following pm2 steps.
 *	You'll need to change the API endpoint for the frontend code in the `poolui/build/globals.js` and `poolui/build/globals.default.js`. This will usually be `http(s)://<your server FQDN>/api` unless you tweak caddy!
 
-
-
 3. Wallet Setup
 ---------------
-
 The pool is designed to have a dual-wallet design, one which is a fee wallet, one which is the live pool wallet.  The fee wallet is the default target for all fees owed to the pool owner.  PM2 can also manage your wallet daemon, and that is the suggested run state.
 
-*	Generate your wallets using `/usr/local/src/GraftNetwork/build/release/bin/graft-wallet-cli`
+*	Generate your wallets using `/usr/local/src/GraftNetwork/build/release/bin/graft-wallet-cli`. This is the wallet of your pool.
 *	Make sure to save your regeneration stuff!
 *	For the pool wallet, store the password in a file, the suggestion is ~/wallet_pass: `echo YOURPASSWORD > ~/wallet_pass`
 *	Change the mode of the file with chmod to 0400: `chmod 0400 ~/wallet_pass`
@@ -135,19 +123,12 @@ The pool is designed to have a dual-wallet design, one which is a fee wallet, on
 *	Start the rpc-wallet using PM2: `pm2 start /usr/local/src/GraftNetwork/build/release/bin/graft-wallet-rpc -- --rpc-bind-port 18982 --password-file ~/wallet_pass --wallet-file <Your wallet name here> --disable-rpc-login --trusted-daemon`
 *	To test if the wallet-rpc is running try: `curl -X POST http://127.0.0.1:18982/json_rpc -d '{"jsonrpc":"2.0","id":"0","method":"getaddress"}' -H 'Content-Type: application/json'`
 
-
-
 4. Modify SQL Settings
 ----------------------
-
 *	Edit `nodejs-pool/deployment/personal.sql` for your needs and execute it with `mysql -u root --password=$ROOT_SQL_PASS < ./deployment/personal.sql` (ROOT_SQL_PASS is in /root/.my.cnf)
-
-
-
 
 5. Start Pool
 --------------
-
 ```shell
 cd ~/nodejs-pool/
 pm2 start init.js --name=blockManager --log-date-format="YYYY-MM-DD HH:mm Z"  -- --module=blockManager
@@ -163,13 +144,6 @@ and save all running pm2 processes: `pm2 save`
 
 
 The shareHost configuration is designed to be pointed at wherever the leafApi endpoint exists.  For xmrpool.net, we use https://api.graftpool.online/leafApi.  If you're using the automated setup script, you can use: `http://<your IP>/leafApi`, as Caddy will proxy it.  If you're just using localhost and a local pool serv, http://127.0.0.1:8000/leafApi will do you quite nicely
-
-Additional ports can be added as desired, samples can be found at the end of base.sql.  If you're not comfortable with the MySQL command line, I highly suggest MySQL Workbench or a similar piece of software (I use datagrip!).  Your root MySQL password can be found in `/root/.my.cnf`
-
-Final Manual Steps
-------------------
-Until the main frontend is done, we suggest running the following SQL line:
-
 
 
 Pool Troubleshooting
@@ -253,8 +227,8 @@ Installation/Configuration Assistance
 If you need help installing the pool from scratch, please have your servers ready, which would be Ubuntu 16.04 servers, blank and clean, DNS records pointed.  These need to be x86_64 boxes with AES-NI Available.
 
 
-Installation assistance is 500 GRF, with a 200 GRF deposit, with remainder to be paid on completion.  
-Configuration assistance is 400 GRF with a 200 GRF deposit, and includes debugging your pool configurations, ensuring that everything is running, and tuning for your uses/needs.  
+Installation assistance is 0,5 XMR, with a 0,2 XMR deposit, with remainder to be paid on completion.  
+Configuration assistance is 0,3 XMR with a 0,1 XMR deposit, and includes debugging your pool configurations, ensuring that everything is running, and tuning for your uses/needs.  
 
 SSH access with a sudo-enabled user will be needed, preferably the user that is slated to run the pool.
 
