@@ -125,7 +125,7 @@ The pool is designed to have a dual-wallet design, one which is a fee wallet, on
 
 4. Modify SQL Settings
 ----------------------
-*	Edit `nodejs-pool/deployment/personal.sql` for your needs and execute it with `mysql -u root --password=$ROOT_SQL_PASS < ./deployment/personal.sql` (ROOT_SQL_PASS is in /root/.my.cnf)
+*	Edit `nodejs-pool/deployment/personal.sql` for your needs and execute it with `sudo mysql -u root --password=$ROOT_SQL_PASS < ./deployment/personal.sql` (ROOT_SQL_PASS is in /root/.my.cnf)
 
 5. Start Pool
 --------------
@@ -143,7 +143,7 @@ pm2 restart api
 and save all running pm2 processes: `pm2 save`
 
 
-The shareHost configuration is designed to be pointed at wherever the leafApi endpoint exists.  For xmrpool.net, we use https://api.graftpool.online/leafApi.  If you're using the automated setup script, you can use: `http://<your IP>/leafApi`, as Caddy will proxy it.  If you're just using localhost and a local pool serv, http://127.0.0.1:8000/leafApi will do you quite nicely
+The shareHost configuration is designed to be pointed at wherever the leafApi endpoint exists.  For graftpool.online, we use https://api.graftpool.online/leafApi.  If you're using the automated setup script, you can use: `http://<your IP>/leafApi`, as Caddy will proxy it.  If you're just using localhost and a local pool serv, http://127.0.0.1:8000/leafApi will do you quite nicely
 
 
 Pool Troubleshooting
