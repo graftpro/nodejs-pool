@@ -1,0 +1,5 @@
+apps:
+  - script: 'init.js'
+    args: '--module=pool'
+    name: 'pool'
+    log_date_format: 'YYYY-MM-DD HH:mm Z'

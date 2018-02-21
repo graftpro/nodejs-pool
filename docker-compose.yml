@@ -1,0 +1,49 @@
+version: '2'
+services:
+
+  pool:
+    build: .
+    volumes:
+      - ./data/testnet/lmdb:/pool/lmdb
+    ports:
+      - '8000:8000'
+      - '8001:8001'
+      - '3333:3333'
+      - '5555:5555'
+      - '6666:6666'
+      - '7777:7777'
+      - '8888:8888'
+      - '9000:9000'
+    links:
+      - db:mysql
+
+  db:
+    image: mariadb:10.2
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - '3306:3306'
+
+  graft:
+    build:
+      context: ./graft_node
+    environment:
+      LOG_LEVEL: 0
+      P2P_BIND_IP: 0.0.0.0
+      P2P_BIND_PORT: 28880
+      RPC_BIND_IP: 0.0.0.0
+      RPC_BIND_PORT: 28881
+      WALLET_RPC_BIND_IP: 0.0.0.0
+      WALLET_RPC_BIND_PORT: 28882
+      WALLET_PASSWORD: qweqwe
+      NETWORK: --testnet
+    ports:
+      - '28880:28880'
+    expose:
+      - '28881'
+      - '28882'
+    volumes:
+      - ./data/testnet/.graft:/root/.graft
+      - ./data/testnet/wallet:/wallet

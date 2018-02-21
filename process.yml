@@ -1,0 +1,35 @@
+apps:
+  - script: 'init.js'
+    args: '--module=api'
+    name: 'api'
+    log_date_format: 'YYYY-MM-DD HH:mm Z'
+
+  - script: 'init.js'
+    args: '--module=blockManager'
+    name: 'blockManager'
+    log_date_format: 'YYYY-MM-DD HH:mm Z'
+
+  - script: 'init.js'
+    args: '--module=worker'
+    name: 'worker'
+    log_date_format: 'YYYY-MM-DD HH:mm Z'
+
+  - script: 'init.js'
+    args: '--module=payments'
+    name: 'payments'
+    log_date_format: 'YYYY-MM-DD HH:mm Z'
+
+  - script: 'init.js'
+    args: '--module=remoteShare'
+    name: 'remoteShare'
+    log_date_format: 'YYYY-MM-DD HH:mm Z'
+
+  - script: 'init.js'
+    args: '--module=longRunner'
+    name: 'longRunner'
+    log_date_format: 'YYYY-MM-DD HH:mm Z'
+
+  - script: 'init.js'
+    args: '--module=pool'
+    name: 'pool'
+    log_date_format: 'YYYY-MM-DD HH:mm Z'

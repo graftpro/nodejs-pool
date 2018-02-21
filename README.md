@@ -12,13 +12,13 @@ worker - Does regular processing of statistics and sends status e-mails for non-
 ```
 API listens on port 8001, remoteShare listens on 8000
 
-graftpool.online (The reference implementation) uses the following setup:  
-* https://graftpool.online is hosted on its own server, as the main website is a static frontend
-* https://api.graftpool.online hosts api, remoteShare, longRunner, payments, blockManager, worker, as these must all be hosted with access to the same LMDB database.
+graftpro.com (The reference implementation) uses the following setup:  
+* https://graftpro.com is hosted on its own server, as the main website is a static frontend
+* https://api.graftpro.com hosts api, remoteShare, longRunner, payments, blockManager, worker, as these must all be hosted with access to the same LMDB database.
 
 Sample Caddyfile for API:
 ```text
-https://api.graftpool.online {
+https://api.graftpro.com {
     proxy /leafApi 127.0.0.1:8000
     proxy / 127.0.0.1:8001
     cors
@@ -143,7 +143,7 @@ pm2 restart api
 and save all running pm2 processes: `pm2 save`
 
 
-The shareHost configuration is designed to be pointed at wherever the leafApi endpoint exists.  For graftpool.online, we use https://api.graftpool.online/leafApi.  If you're using the automated setup script, you can use: `http://<your IP>/leafApi`, as Caddy will proxy it.  If you're just using localhost and a local pool serv, http://127.0.0.1:8000/leafApi will do you quite nicely
+The shareHost configuration is designed to be pointed at wherever the leafApi endpoint exists.  For graftpro.com, we use https://api.graftpro.com/leafApi.  If you're using the automated setup script, you can use: `http://<your IP>/leafApi`, as Caddy will proxy it.  If you're just using localhost and a local pool serv, http://127.0.0.1:8000/leafApi will do you quite nicely
 
 
 Pool Troubleshooting

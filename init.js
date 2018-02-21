@@ -9,6 +9,8 @@ let path = require('path');
 
 global.support = require("./lib/support.js")();
 global.config = JSON.parse(config);
+global.config.pool_id = parseInt(process.env['POOL_ID']);
+global.config.hostname = process.env['POOL_HOSTNAME'];
 global.mysql = mysql.createPool(global.config.mysql);
 global.protos = protobuf(fs.readFileSync('./lib/data.proto'));
 global.argv = argv;
