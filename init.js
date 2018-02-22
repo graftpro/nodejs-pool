@@ -11,6 +11,11 @@ global.support = require("./lib/support.js")();
 global.config = JSON.parse(config);
 global.config.pool_id = parseInt(process.env['POOL_ID']);
 global.config.hostname = process.env['POOL_HOSTNAME'];
+
+if (process.env['MYSQL_HOST'] && process.env['MYSQL_PASSWORD']) {
+  global.config.mysql.host = process.env['MYSQL_HOST'];
+  global.config.mysql.password = process.env['MYSQL_PASSWORD'];
+}
 global.mysql = mysql.createPool(global.config.mysql);
 global.protos = protobuf(fs.readFileSync('./lib/data.proto'));
 global.argv = argv;

@@ -14,8 +14,13 @@ services:
       - '7777:7777'
       - '8888:8888'
       - '9000:9000'
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PASSWORD: root
+      DEBUG: 'payments'
     links:
       - db:mysql
+      - graft
 
   db:
     image: mariadb:10.2
