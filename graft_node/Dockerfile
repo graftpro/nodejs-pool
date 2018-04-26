@@ -6,12 +6,12 @@ RUN apt-get update && apt-get install -y wget supervisor
 
 WORKDIR /usr/local/bin
 
-RUN wget https://github.com/graftpro/GraftNetwork/releases/download/v1.1.2-ext/graft-wallet-rpc && \
-  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.1.2-ext/graft-wallet-cli && \
-  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.1.2-ext/graftnoded && \
-  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.1.2-ext/graft-supernode && \
-  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.1.2-ext/graft-blockchain-export && \
-  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.1.2-ext/graft-blockchain-import && \
+RUN wget https://github.com/graftpro/GraftNetwork/releases/download/v1.2.1-ext/graft-wallet-rpc && \
+  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.2.1-ext/graft-wallet-cli && \
+  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.2.1-ext/graftnoded && \
+  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.2.1-ext/graft-supernode && \
+  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.2.1-ext/graft-blockchain-export && \
+  wget https://github.com/graftpro/GraftNetwork/releases/download/v1.2.1-ext/graft-blockchain-import && \
   chmod +x graft*
 
 # Contains the blockchain
